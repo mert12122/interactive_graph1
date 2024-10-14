@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Interactive Graph (15 Data Points)</title>
+</head>
+<body>
+    <h2>Interactive Graph (Up to 15 Data Points)</h2>
+    <div id="graph"></div>
+    <h4>Enter your data points (X and Y values between 0 and 1):</h4>
+    <input type="number" id="x-value" placeholder="X value (0 to 1)" step="0.1" min="0" max="1">
+    <input type="number" id="y-value" placeholder="Y value (0 to 1)" step="0.1" min="0" max="1">
+    <button onclick="addData()">Add Data Point</button>
+
+    <p id="warning-message" style="color:red;"></p>
+
+    <script>
+        var xData = [];  // Array to store X values
+        var yData = [];  // Array to store Y values
+        var maxPoints = 15; // Limit to 15 points
+
+        // Trace for plotting the data
+        var trace = {
+            x: xData,
+            y: yData,
+            mode: 'lines+markers', // Displays lines and markers
+            type: 'scatter'
+        };
+
+        // Layout for the graph (X and Y axis settings)
+        var layout = {
+            xaxis: {range: [0, 1], dtick: 0.1, title: 'X Axis'},  // X axis range 0 to 1
+            yaxis: {range: [0, 1], dtick: 0.1, title: 'Y Axis'}   // Y axis range 0 to 1
+        };
+
+        // Create the initial graph
+        Plotly.newPlot('graph', [trace], layout);
+
+        // Function to add data points to the graph
+        function addData() {
+            var x = parseFloat(document.getElementById('x-value').value);  // Get X value
+            var y = parseFloat(document.getElementById('y-value').value);  // Get Y value
+            var warningMessage = document.getElementById('warning-message');  // Warning message if too many points
+
+            // Check if values are valid (between 0 and 1)
+            if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+                if (xData.length < maxPoints) {  // Check if max points reached
+                    xData.push(x);  // Add X value to array
+                    yData.push(y);  // Add Y value to array
+                    Plotly.react('graph', [trace], layout);  // Update the graph with new data
+                    warningMessage.textContent = "";  // Clear any warning messages
+                } else {
+                    warningMessage.textContent = "You have reached the maximum of 15 data points.";  // Max points reached
+                }
+            } else {
+                alert('Please enter values between 0 and 1.');  // Show an alert if input is invalid
+            }
+        }
+    </script>
+</body>
+</html>
